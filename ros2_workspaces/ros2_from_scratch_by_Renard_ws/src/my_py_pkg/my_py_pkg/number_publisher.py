@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import rclpy
 from rclpy.node import Node
+from rclpy.parameter import Parameter
 from example_interfaces.msg import Int64
 
 """
@@ -14,18 +15,27 @@ class NumberPublisherNode(Node):
 
     def __init__(self):
         super().__init__("number_publisher_node") 
-        # declare parameters --------------
+  
         self.declare_parameter("number", 2)
         self.declare_parameter("publish_period", 1.0)
-        # Get parameters --------------------------
+ 
         self.number_ = self.get_parameter("number").value
         self.timer_period_ = self.get_parameter("publish_period").value
+
+        # register paramater callback to the node
+        self.add_post_set_parameters_callback(self.parameters_callback)
+
         # queue size is the number of messages that can be retained on the topic
         # if the publish rate exceeds the consumption rate
         self.number_publisher_ = self.create_publisher(Int64, "number", 10)
         # Timer fires the callback each second
         self.number_timer_ = self.create_timer(self.timer_period_, self.publish_number)
         self.get_logger().info(self.get_name()+ " started!!")
+
+    def parameters_callback(self, params:list[Parameter]):
+        for param in params:
+            if param.name == "number":
+                self.number_ = param.value   
 
     def publish_number(self):
         msg = Int64() # construct message instance

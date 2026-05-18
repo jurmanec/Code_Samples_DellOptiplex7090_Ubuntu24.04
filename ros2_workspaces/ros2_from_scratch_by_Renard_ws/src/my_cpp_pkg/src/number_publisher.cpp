@@ -1,6 +1,9 @@
 #include "rclcpp/rclcpp.hpp"
 #include "example_interfaces/msg/int64.hpp" // interface for message
 
+
+using namespace std::placeholders;
+
 class NumberPublisherNode : public rclcpp::Node  {
 
     public:
@@ -12,6 +15,10 @@ class NumberPublisherNode : public rclcpp::Node  {
         this->declare_parameter("publish_period", 1.0);
         number_ = this->get_parameter("number").as_int();
         double timer_period_ = this->get_parameter("publish_period").as_double();
+
+        // param_callback_handle_ = this->add_post_set_parameters_callback(std::bind(&NumberPublisherNode::parametersCallack, this, _1));
+        param_callback_handle_ = this->add_post_set_parameters_callback(std::bind(&NumberPublisherNode::parametersCallack, this, _1));
+
         number_publisher_ = this->create_publisher<example_interfaces::msg::Int64>("number", 10);
         number_timer_ = this->create_wall_timer(std::chrono::duration<double>(timer_period_), std::bind(&NumberPublisherNode::publishNumber, this));
         RCLCPP_INFO(this->get_logger(), "%s created!!", this->get_name());
@@ -23,6 +30,15 @@ class NumberPublisherNode : public rclcpp::Node  {
         msg.data = number_;
         number_publisher_->publish(msg);
     }
+
+    void parametersCallack(const std::vector<rclcpp::Parameter>& parameters) { // recall that for references we dont copy. However with const, we also dont mutate
+      for (const auto &param: parameters) {
+        if (param.get_name() == "number") {
+            number_ = param.as_int();
+        }
+      }  
+    }
+
     int number_;
     /**
      * Publisher is a template class. 
@@ -31,6 +47,7 @@ class NumberPublisherNode : public rclcpp::Node  {
      */
     rclcpp::Publisher<example_interfaces::msg::Int64>::SharedPtr number_publisher_;
     rclcpp::TimerBase::SharedPtr number_timer_;
+    PostSetParametersCallbackHandle::SharedPtr param_callback_handle_;
 };
 
 int main(int argc, char **argv) {

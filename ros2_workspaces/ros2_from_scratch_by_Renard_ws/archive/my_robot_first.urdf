@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<robot name ="my_robot">
+    <material name="green">
+        <color rgba="0.0 0.6 0.0 1.0"/>
+    </material>
+    <material name="grey">
+        <color rgba="0.7 0.7 0.7 1.0"/>
+    </material>
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="0.6 0.4 0.2"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.1" rpy="0.0 0.0 0.0"/>
+            <material name="green" />
+        </visual>    
+    </link>
+    <!-- <link name="shoulder_link">
+        <visual name="">
+            <geometry>
+                <cylinder radius="0.1" length="0.3"/>
+            </geometry>
+            <origin xyz="0.0 0.0 0.15" rpy="0.0 0.0 0.0"/>
+            <material name="grey" />
+        </visual>
+    </link> -->
+    <joint name="base_shoulder_joint" type="revolute">
+        <origin xyz="0.0 0.0 0.2" rpy="0.0 0.0 0.0"/> <!--origin of child relative to parent -->
+        <parent link="base_link"/>
+        <child link="shoulder_link"/>
+        <axis xyz="0.0 0.0 1"/>
+        <limit lower="-3.14" upper="3.14" effort="100.0" velocity="100.0"/>
+    </joint>
+</robot>

@@ -27,6 +27,7 @@ setup(
             "turtle1_controller_node_py =               turtle_controller.turtle_controller:main",
             "turtle1_controller_node_soln_py =          turtle_controller.turtle_controller_soln:main",
             "turtle1_controller_ch6_service_challenge = turtle_controller.turtle_controller_ch6_service_challenge:main",
+            "turtle1_controller_ch8_param_challenge   = turtle_controller.turtle_controller_ch8_param_challenge:main",
         ],
     },
 )

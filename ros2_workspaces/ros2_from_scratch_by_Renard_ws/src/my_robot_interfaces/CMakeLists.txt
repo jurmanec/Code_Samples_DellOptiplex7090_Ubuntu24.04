@@ -17,7 +17,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   # we will add the namne of our custom interfaces here
   msg/HardwareStatus.msg
   srv/ResetCounter.srv
-  srv/ToggleActivateTurtle.srv
+  srv/ToggleActivateTurtle.srv # my solution
+  srv/ActivateTurtle.srv # author solution
   action/CountUntil.action
 )
 
